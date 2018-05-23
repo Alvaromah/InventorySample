@@ -141,17 +141,13 @@ In a more complex scenario, the Customer business object contains only the “Co
 
 The Model also helps decouple the business objects used in the data layer from the classes used in the presentation layer, so if a change is required in a business object schema, the application will be less affected.
 
-The following diagram represents the relationship between the business objects and the models in the application architecture.
-
-![Models Relationships](img/ovw-xxx.png)
-
 # Services
 View-models make use of Services to execute the operations requested by the user, such as create, update or retrieve a list of customers or products. View-models also make use of Services to log the user activity, show dialogs or display a text in the status-bar by sending a message to the shell view.
 
 Services contains the core functionality of the application. We distinguish two kinds of services:
 
--	Application Services – refers to those services implementing functionality regardless of the business of the application. Examples of application services are Navigation Service or Message Service that can be reused for any other application.
--	Domain Services (or Business Services) – implements the functionality specific for the business of the application. Examples of domain services are Customer Services or Product Services that are specific for a product management application.
+-	**Application Services** – refers to those services implementing functionality regardless of the business of the application. Examples of application services are Navigation Service or Message Service that can be reused for any other application.
+-	**Domain Services** (or Business Services) – implements the functionality specific for the business of the application. Examples of domain services are Customer Services or Product Services that are specific for a product management application.
 
 The following diagram shows the two group of services used in this application:
 
@@ -160,34 +156,25 @@ The following diagram shows the two group of services used in this application:
 ## Application Services
 Here is a brief description of the Application Services used in this application:
 
-### Navigation Service
-Expose the functionality to navigate back and forward to a different view. It also offers the possibility to open a view in a new window.
-
-### Message Service
-Enables communication between different components of the application without having to know anything about each other. The communication between components are based on a publishers-subscribers pattern.
-
-### Log Service
-Offers the methods to write logs to a local repository to keep track of the user activity for debugging or auditing purposes.
-
-### Login Service
-Implements the authentication and authorization mechanism to access the application.
-
-### Dialog Service
-Offers methods to display a dialog message to the user for information or confirmation purposes.
-
-### Context Service
-Exposes properties and methods related to the current execution context. This service is used internally to manage the execution in a multi-window environment where each window is executed in a different thread.
+| Service | Description |
+|---------|-------------|
+| **Navigation Service** | Expose the functionality to navigate back and forward to a different view. It also offers the possibility to open a view in a new window. |
+| **Message Service** | Enables communication between different components of the application without having to know anything about each other. The communication between components are based on a publishers-subscribers pattern. |
+| **Log Service** | Offers the methods to write logs to a local repository to keep track of the user activity for debugging or auditing purposes. |
+| **Login Service** | Implements the authentication and authorization mechanism to access the application. |
+| **Dialog Service** | Offers methods to display a dialog message to the user for information or confirmation purposes. |
+| **Context Service** | Exposes properties and methods related to the current execution context. This service is used internally to manage the execution in a multi-window environment where each window is executed in a different thread. |
 
 ## Domain Services
 The domain services offer the CRUD (Create, Read, Update, Delete) operations over the business entities. Therefore, we have a specific service for Customers, Orders, OrderItems and Products.
 
 To see the common methods used in these services, let’s examine the Customer service:
--	GetCustomer(id) – get a single customer by its id.
--	GetCustomers(request) – get a collection of customers matching the request parameters.
--	GetCustomers(skip, take, request) – same as GetCustomers(request) but returns only ‘take’ number of items starting from the ‘skip’ parameter.
--	GetCustomersCount(request) – return the number of Customers that match the request parameters.
--	UpdateCustomer(customer) – update or create a new Customer with the values contained in the customer parameter.
--	DeleteCustomer(customer) – delete the Customer specified by the customer parameter.
+-	**GetCustomer(id)** – get a single customer by its id.
+-	**GetCustomers(request)** – get a collection of customers matching the request parameters.
+-	**GetCustomers(skip, take, request)** – same as GetCustomers(request) but returns only ‘take’ number of items starting from the ‘skip’ parameter.
+-	**GetCustomersCount(request)** – return the number of Customers that match the request parameters.
+-	**UpdateCustomer(customer)** – update or create a new Customer with the values contained in the customer parameter.
+-	**DeleteCustomer(customer)** – delete the Customer specified by the customer parameter.
 
 There is also a LookupTables Service used to retrieve information for common Tables such as Categories or CountryCodes. This service is used, for example, to get the name of a country by its code, or the tax rate for a specific tax type.
 
