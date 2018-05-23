@@ -1,33 +1,79 @@
 # Architecture Overview
-VanArsdel Inventory Sample is based on a VMMV architecture pattern to facilitate the separation of the user interface from the business logic of the application. You can read more details about the MVVM pattern in the MVVM section of this documentation.
+**VanArsdel Inventory Sample** is based on a VMMV architecture pattern to facilitate the separation of the user interface from the business logic of the application. You can read more details about the MVVM pattern in the MVVM section of this documentation.
 
-The following diagram shows the different layers involved in the design of the architecture and the relationship between them.
+The following diagram shows the different layers in the application.
 
 ![Architecture Diagram](img/ovw-layers.png)
 
 # Views
 Views are essentially what the user sees on the screen to interact with the application. Examples of Views in this application are: CustomersView, OrdersView or ProductsView.
-In order to simplify the development and make the code more readable, views are subdivided in subviews. For example, the CustomersView consists on the following subviews:
--	CustomersList – contains the list of customers and the controls to execute common actions over the collection of customers, such as: Add new customer, search customers or refresh customer list.
--	CustomersDetails – contains the details of a selected customer with input controls to enable the edition of the selected customer in the list. It also contains the common actions available for a customer, such as: Edit or delete.
--	CustomersCard – shows the main properties of the selected customer as a quick and read only view.
--	CustomersOrders – contains the list of orders associated to the selected customer.
--	CustomersView – is the top-level view containing all the subviews described before. 
 
-The following image shows how the Customers view and subviews are organized in the Solution Explorer.
+Views contains layers and controls to display the user interface. The layers organize the controls in the view, and the controls show the information to the user. All views depend on a view-model that manage the logic of the User Interface.
 
-![Views in Solution Explorer](img/ovw-views-explorer.png)
+When you examine the code-behind of a view, you will notice that the first thing it does in the constructor is instantiate the view-model. Another thing to notice is the overridden of two methods: OnNavigatedTo and OnNavigatingFrom.
+
+The OnNavigatedTo is executed when the user navigates to this view and is used to initialize the view-model with the parameters received in the navigation.
+
+The OnNavigatingFrom is executed when the user navigates out of this view and is used to free the resources used by the view-model.
+
+The following code shows a typical implementation of a view.
+
+```csharp
+    public class CustomersView : Page
+    {
+        public CustomersView()
+        {
+            ViewModel = ServiceLocator.Current.GetService<CustomersViewModel>();
+            InitializeComponent();
+        }
+
+        public CustomersViewModel ViewModel { get; }
+
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            ViewModel.Subscribe();
+            await ViewModel.LoadAsync(e.Parameter as CustomerListArgs);
+        }
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            ViewModel.Unload();
+            ViewModel.Unsubscribe();
+        }
+    }
+```
+
+In order to simplify the development and make the code more readable, views are subdivided in subviews.
+
+For example, the CustomersView consists on the following subviews:
+-	**CustomersList** – contains the list of customers and the controls to execute common actions over the collection of customers, such as: Add new customer, search customers or refresh customer list.
+-	**CustomersDetails** – contains the details of a selected customer with input controls to enable the edition of the selected customer in the list. It also contains the common actions available for a customer, such as: Edit or delete.
+-	**CustomersCard** – shows the main properties of the selected customer as a quick and read only view.
+-	**CustomersOrders** – contains the list of orders associated to the selected customer.
+-	**CustomersView** – is the top-level view containing all the subviews described before. 
 
 The following image shows the diferent subviews contained in the CustomersView.
 
 ![Views and Subviews](img/ovw-views-subviews.png)
 
+
 ## Shell views
-There are two special views that worth be treated apart: MainShellView and ShellView.
+A Shell view is a special type of view. This view is the shell of a window and serves as a container for other views.
 
-These two views are containers for other views and holds each a frame to enable the navigation between views.
+A Shell view contains a frame to enable the navigation between other views and a status bar on the bottom to notify messages to the user.
 
-The difference between these two views is that, while the MainShellView is used for the main window and contains the Navigation pane, the ShellView is used for each new window that is opened in the application.
+Anytime we open a new window in the application, a new Shell view is created, and the content is initialized using the frame to navigate to the specific view.
+
+## MainShell view
+The main window uses a specialized version of a Shell view: the MainShell view.
+
+The MainShell view is like another Shell view but it contains a navigation pane on the left to offer the user different options to navigate to.
+
+When you execute the application and log in, the MainShell view is created. There can be multiple Shell views in the application, but only one MainShell view.
+
+The following image identifies the different elements in the MainShell view.
+
+![MainShellView](img/ovw-views-mainshell.png)
 
 # ViewModels
 View-models are another essential part in the MVVM architecture pattern. You can read more details about the concepts of the View-model in the MVVM – View Model section of this documentation.
