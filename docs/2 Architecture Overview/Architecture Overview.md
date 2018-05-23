@@ -289,5 +289,15 @@ Dependency Injection is not only used to resolve services, it is also used to re
 > Only classes registered in the ServiceCollection can be resolved by using the ServiceLocator.
 
 # Summary
-VanArsdel Inventory Sample is based on a VMMV architecture pattern to facilitate the separation of the user interface from the business logic of the application. You can read more details about the MVVM pattern in the MVVM section of this documentation
+VanArsdel Inventory Sample architecture is designed following the VMMV pattern, separating the user interface from the business logic of the application.
+-	Views represents the user interface of the application.
+-	ViewModels contains the user interface logic.
+-	Models represents the business data of the application.
 
+View-models make use of services to execute the operation requested by the user. We distinguish two kinds of services:
+-	Domain services – implement the business functionality of the application.
+-	Application services – implement core functionality needed by the infrastructure of the application.
+
+View-models and services are instantiated using a ServiceLocator following the Dependency Injection pattern.
+-	We request a service to the ServiceLocator by specifying an interface.
+-	ServiceLocator can be configured to instantiate services as Singletone, Transient or Scoped.
