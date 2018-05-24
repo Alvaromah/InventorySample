@@ -221,49 +221,37 @@ The following diagram shows the relationship between components using a ServiceL
 
 As you can see in the diagram, the component consuming the ILogService can make use of the LogService, even when the service is implemented out of the scope of the component.
 
-## Configuring the ServiceLocator
-We saw already how to request a service using the ServiceLocator. Let’s see now how to configure the ServiceLocator to specify what service instance should be returned for each IService request.
+## ServiceLocator configuration
+We saw before how to request a service using the ServiceLocator. Now let’s see how to configure the ServiceLocator to return a specific instance when we request for a service.
 
-The ServiceLocator implemented in this application relies on the ServiceCollection provided by the Microsoft DependencyInjection library to resolve the requests for a service.
+The ServiceLocator uses a ServiceCollection class where services are registered and configured to be used in the application.
 
-To configure a service, we just need to associate a service interface with a service implementation.
+>**Note:** The ServiceCollection class is provided by the Microsoft DependencyInjection Library.
 
-The following example configures the ServiceLocator’s collection to return a new instance of the class LogServiceImp whenever a ILogService is requested:
-
-```csharp
-    public class ServiceLocator : IDisposable
-    {
-        static private ServiceProvider _rootServiceProvider = null;
-
-        static public void Configure(IServiceCollection serviceCollection)
-        {
-            // ...
-            serviceCollection.AddTransient<ILogService, LogService>();
-            // ...
-            _rootServiceProvider = serviceCollection.BuildServiceProvider();
-        }
-    }
-```
-
-If we later decide that is better to reuse the LogServiceImp for all the requests for a ILogService we just need to change the registration of the service as Singletone instead of Transient:
-
+To register a service in the ServiceCollection we can use the following code:
 ```csharp
     serviceCollection.AddSingletone<ILogService, LogService>();
 ```
 
-There are some cases where we want to return a singleton instance for a service, but only under some circumstances.
+In this case, we are registering the ILogService interface to use the LogService implementation as a singletone. This means that the next time we request a ILogService, the ServiceLocator will return an instance of the LogService class and will reuse the same instance for all the future requests.
 
-For example, the Navigation service is used to navigate to another view in the application. Since the Navigation service relies on a single frame to navigate, we need to use always the same Navigation service for all the components.
+If we want the ServiceLocator to return a new instance for every request, we can register the ILogService as transient:
+```csharp
+    serviceCollection.AddTransient<ILogService, LogService>();
+```
 
-But this is not necessarily true in a multi-window environment, because each window needs its own frame to navigate. Components executing in the same window needs a reference to the same Navigation service, but components executing in another window needs their own reference to its own Navigation service.
+Registering a service as transient means that we always want a fresh new instance of the service implementation.
 
-To solve this scenario, Microsoft DependencyInjection Library introduces the concept of scopes and scoped services. We can see a scope as a context to resolve scoped services. The following code configures a service as scoped.
+In this application, all services are configured as singleton, but there is an exception to this rule: The Navigation service.
 
+The Navigation service is used to navigate to another view in the application. In a single window environment, the Navigation service can be reused by all components of the application, but in a multi-window environment, each window needs its own instance of the service.
+
+To solve this scenario, Microsoft DependencyInjection Library introduces the concept of scopes and scoped services. We can see a scope as a context of execution. The following code configures a service as scoped.
 ```csharp
     serviceCollection.AddScoped<INavigationService, NavigationService>();
 ```
 
-Scoped services are similar to singleton services when requested in the same scope. Requesting a scoped service in the same scope will return always the same instance but requesting a service in a different scope will return a different instance.
+Scoped services are similar to singleton services but only when requested in the same scope. Requesting a scoped service in the same scope will return always the same instance but requesting a service in a different scope will return a different instance.
 
 We, as developers, are responsible of creating a new scope when necessary. In this application, a new scope is created for each new window opened in the application. This way, when we request a INavigationService in one window we will receive a Navigation service to navigate in that window.
 
