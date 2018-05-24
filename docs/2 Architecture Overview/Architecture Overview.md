@@ -131,7 +131,7 @@ This is a generic class used by all the view-models that contains the details of
 Please, refer to the GenericDetailsViewModel source code for a detailed list of members implemented in this class.
 
 # Models
-Models are the third leg in the MVVM architecture pattern. You can read more details about the concepts of the Model in the MVVM – Views section of this documentation.
+Models are the third leg in the MVVM architecture pattern. You can read more details about the concepts of the Model in the MVVM – Models section of this documentation.
 
 In this application, a model wraps the data of a business object to better expose its properties to the view. In other words, the business object is the raw data received from the data source while the Model is a “view friendly” version, adapting or extending its properties for a better representation of the data.
 
@@ -146,7 +146,7 @@ View-models make use of Services to execute the operations requested by the user
 
 Services contains the core functionality of the application. We distinguish two kinds of services:
 
--	**Application Services** – refers to those services implementing functionality regardless of the business of the application. Examples of application services are Navigation Service or Message Service that can be reused for any other application.
+-	**Application Services** – implement core functionality needed by the infrastructure of the application. This functionality in independent of the business of the application and can be reused in other solutions. Examples of application services are Navigation Service or Message Service that can be reused for any other application.
 -	**Domain Services** (or Business Services) – implements the functionality specific for the business of the application. Examples of domain services are Customer Services or Product Services that are specific for a product management application.
 
 The following diagram shows the two group of services used in this application:
@@ -156,30 +156,30 @@ The following diagram shows the two group of services used in this application:
 ## Application Services
 Here is a brief description of the Application Services used in this application:
 
-| Service | Description |
-|---------|-------------|
+| Service                | Description |
+|------------------------|-------------|
 | **Navigation Service** | Expose the functionality to navigate back and forward to a different view. It also offers the possibility to open a view in a new window. |
 | **Message Service** | Enables communication between different components of the application without having to know anything about each other. The communication between components are based on a publishers-subscribers pattern. |
 | **Log Service** | Offers the methods to write logs to a local repository to keep track of the user activity for debugging or auditing purposes. |
 | **Login Service** | Implements the authentication and authorization mechanism to access the application. |
-| **Dialog Service** | Offers methods to display a dialog message to the user for information or confirmation purposes. |
+| **Dialog Service** | Offers methods to display a dialog message to show information or ask for confirmation. |
 | **Context Service** | Exposes properties and methods related to the current execution context. This service is used internally to manage the execution in a multi-window environment where each window is executed in a different thread. |
 
 ## Domain Services
-The domain services offer the CRUD (Create, Read, Update, Delete) operations over the business entities. Therefore, we have a specific service for Customers, Orders, OrderItems and Products.
+The domain services in this application offer CRUD operations (Create, Read, Update, Delete) over the business entities. We have a specific service for Customers, Orders, OrderItems and Products.
 
 To see the common methods used in these services, let’s examine the Customer service:
 -	**GetCustomer(id)** – get a single customer by its id.
--	**GetCustomers(request)** – get a collection of customers matching the request parameters.
+-	**GetCustomers(request)** – get a collection of customers using the request parameter.
 -	**GetCustomers(skip, take, request)** – same as GetCustomers(request) but returns only ‘take’ number of items starting from the ‘skip’ parameter.
--	**GetCustomersCount(request)** – return the number of Customers that match the request parameters.
+-	**GetCustomersCount(request)** – return the number of Customers using the request parameter.
 -	**UpdateCustomer(customer)** – update or create a new Customer with the values contained in the customer parameter.
 -	**DeleteCustomer(customer)** – delete the Customer specified by the customer parameter.
 
 There is also a LookupTables Service used to retrieve information for common Tables such as Categories or CountryCodes. This service is used, for example, to get the name of a country by its code, or the tax rate for a specific tax type.
 
 # Services and Dependency Injection
-When we need to make use of a service, the first thing we need is a reference to the service. The easiest way to get a reference to a service could be just creating an instance of the required service.
+When we need to make use of a service, the first thing we need is a reference to that service. The easiest way to get a reference to a service could be just creating an instance of the required service.
 
 For example, let’s say we need to write a log using the Log Service:
 
@@ -206,20 +206,22 @@ To get an instance of a service using the ServiceLocator we can use the followin
     var logService = ServiceLocator.Request<ILogService>()
 ```
 
-The first thing to note is that we are not creating an instance of a service, we are requesting a service specifying an interface.
+The first thing to note is that we are not creating an instance of a service, **we are requesting a service specifying an interface**.
 
 This have the following considerations:
--	The ServiceLocator may return a new instance or reuse an existing instance of the service.
+-	The ServiceLocator may return a new instance or reuse an existing instance of the service (singleton).
 -	The ServiceLocator may return a real implementation of ILogService or a fake implementation for testing purposes.
 -	Since we are requesting an interface, the service can be implemented in another library, out of the scope of the current component.
 
-If the ServiceLocator returns a new instance, an existing instance, a real implementation or a fake implementation depends on the configuration of the service in the ServiceLocator.
+If the ServiceLocator returns a new instance, an existing instance, a real implementation or a fake implementation depends on the configuration of the service in the ServiceLocator. We will talk about the ServiceLocator configuration later.
 
 The following diagram shows the relationship between components using a ServiceLocator.
 
 ![Dependency Injection ServiceLocator](img/ovw-servicelocator-refs.png)
 
 As you can see in the diagram, the component consuming the ILogService can make use of the LogService, even when the service is implemented out of the scope of the component.
+
+Dependency Injection is not only used to resolve Service instances, it is also used to request view-models and can be used for any object in the application. We just need to tell the ServiceLocator how to resolve the request.
 
 ## ServiceLocator configuration
 We saw before how to request a service using the ServiceLocator. Now let’s see how to configure the ServiceLocator to return a specific instance when we request for a service.
