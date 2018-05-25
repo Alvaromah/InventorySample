@@ -1,23 +1,43 @@
-# Application Services
+# Services
+View-models make use of Services to execute the operations requested by the user, such as create, update or retrieve a list of customers or products. View-models also make use of Services to log the user activity, show dialogs or display a text in the status-bar by sending a message to the shell view.
 
-There are two types of services in the application: *Domain or Business services* and *Application or Infrastructure services*. The *Application services* are services that typically talk to external resources and are not part of the business domain, but at the same time they are also essential services to make the app works as expected.
+Services contains the core functionality of the application. We distinguish two kinds of services:
 
-The following table describes the Application services used in this application:
+-	**Application Services** – implement core functionality needed by the infrastructure of the application. This functionality in independent of the business of the application and can be reused in other solutions. Examples of application services are Navigation Service or Message Service that can be reused for any other application.
+-	**Domain Services** (or Business Services) – implements the functionality specific for the business of the application. Examples of domain services are Customer Services or Product Services that are specific for a product management application.
+
+The following diagram shows the two group of services used in this application:
+
+![Service Groups](img/ovw-services-groups.png)
+
+## Application Services
+Here is a brief description of the Application Services used in this application:
 
 | Service | Description |
-| ------- | ----------- |
-| `INavigationService` | Service in charge of the navigation of the app | 
-| `IMessageService` | Communication service between diffrent layers of the app |
-| `ILogService` | Service to write the logs of the activity as well as possible exceptions |
-| `IDialogService` | Abstraction for displaying alerts and confirmation messages to the user |
-| `IFilePickerService` | Service that allows the app to access to the file system |
-| `ISettingsService` | This service stores and provides the configurations and settings needed by the app |
-| `IContextService` | This service is the one responsable of identify the context we are working with. Due our application could be executed in multiple windows, this kind of service is necessary |
+|---|---|
+| `Navigation Service` | Expose the functionality to navigate back and forward to a different view. It also offers the possibility to open a view in a new window. |
+| `Message Service` | Enables communication between different components of the application without having to know anything about each other. The communication between components are based on a publishers-subscribers pattern. |
+| `Log Service` | Offers the methods to write logs to a local repository to keep track of the user activity for debugging or auditing purposes. |
+| `Login Service` | Implements the authentication and authorization mechanism to access the application. |
+| `Dialog Service` | Offers methods to display a dialog message to show information or ask for confirmation. |
+| `IFilePickerService` | Allows the application access to the file system with a dialog to select a file |
+| `ISettingsService` | Stores and provides configuration and setting values needed by the application |
+| `Context Service` | Exposes properties and methods related to the current execution context. This service is used internally to manage the execution in a multi-window environment where each window is executed in a different thread. |
 
-Below we will describe more in details two of the more important services: INavigationService and IMessageServices.
+## Domain Services
+The domain services in this application offer CRUD operations (Create, Read, Update, Delete) over the business entities. We have a specific service for Customers, Orders, OrderItems and Products.
+
+To see the common methods used in these services, let’s examine the Customer service:
+-	`GetCustomer(id)` – get a single customer by its id.
+-	`GetCustomers(request)` – get a collection of customers using the request parameter.
+-	`GetCustomers(skip, take, request)` – same as GetCustomers(request) but returns only ‘take’ number of items starting from the ‘skip’ parameter.
+-	`GetCustomersCount(request)` – return the number of Customers using the request parameter.
+-	`UpdateCustomer(customer)` – update or create a new Customer with the values contained in the customer parameter.
+-	`DeleteCustomer(customer)` – delete the Customer specified by the customer parameter.
+
+There is also a LookupTables Service used to retrieve information for common Tables such as Categories or CountryCodes. This service is used, for example, to get the name of a country by its code, or the tax rate for a specific tax type.
 
 ## Navigation Service
-
 Since we are using MVVM, and the ViewModel-First approach, we will use a Navigation Service abstraction to facilitate the ViewModel-based navigation. 
 
 This kind of navigation, oposed to View-based navigation, is the navigation that uses a ViewModel as the subject that determines the navigation. The View isn't specified explicitly. Instead, there is a mechanism to associate each ViewModel with its corresponding View. This is where our Navigation Service comes in. It will perform the navigation itself, but also the will glue the ViewModel with its View.
@@ -142,7 +162,6 @@ public async Task CloseViewAsync()
     await ApplicationViewSwitcher.SwitchAsync(MainViewId, currentId, ApplicationViewSwitchingOptions.ConsolidateViews);
 }
 ```
-
 ## Message Service
 
 Another service that it's important to know is the one represented by the interface `IMessageService`. The mission of this service is to send messages between decoupled components (Views, ViewModels, etc), and once the subscriber receive the message, react to it executing some action. This pattern is known as the **Event Aggregator Pattern**:

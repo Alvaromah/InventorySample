@@ -10,7 +10,7 @@ You can think of a Hello as **a token you can use to unlock (or release) a store
 
 To use Windows Hello, users must have an account either in an **Azure Active Directory** or a **Microsoft Account** connected to their Windows machine.
 
-### Authenticating with Hello
+## Authentication with Windows Hello
 
 Windows Hello provides trustful way for a device to recognize an individual user. After the device has recognized the user based on either a biometric gesture or a PIN, it still has to authenticate to check whether the user has access to the resource.
 

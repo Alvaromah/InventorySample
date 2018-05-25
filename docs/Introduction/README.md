@@ -1,5 +1,4 @@
 # Introduction
-
 During the development of an enterprise app, we as developers, must face several challenges as:
 - App requirements that can change over time.
 - New business opportunities and challenges.
@@ -14,52 +13,40 @@ An effective remedy for these challenges is to partition an app into discrete, l
 
 Before proceeding to decouple the app in different components, it's important to choose the design patterns that will help us to do it properly. These are the patterns we have decided to choose for the Inventory App:
 
-- [Model-View-ViewModel (MVVM)](mvvm.md): Windows 10 enterprise apps are specially design to apply this pattern to decouple the business logic, the presentation logic and the UI views.
-- [Dependency Injection](architecture/app-initial-setup.md#Dependency-Injection): Dependency injection containers reduce the dependency coupling between objects by providing a facility to construct instances of classes with their dependencies injected, and manage their lifetime based on the configuration of the container.
-- [Communication between loosely coupled components](architecture/message-service.md): Message-based communication between components that are inconvenient to link by object and type references.
-- [Navigation](navigation-service.md#Navigation-Service): Define how the Navigation will work, and where the Navigation logic will reside.
-- [Data Access](dataaccess.md): Define how to connect with data sources and the technology to use for that purpose.
+- **Model-View-ViewModel (MVVM)**: Windows 10 enterprise apps are specially design to apply this pattern to decouple the business logic, the presentation logic and the UI views.
+- **Dependency Injection**: Dependency injection containers reduce the dependency coupling between objects by providing a facility to construct instances of classes with their dependencies injected, and manage their lifetime based on the configuration of the container.
+- **Messaging**: Message-based communication between loosely coupled components.
+- **Navigation**: Define how the Navigation will work, and where the Navigation logic will reside.
+- **Data Access**: Define how to connect with data sources and the technology to use for that purpose.
 
 This guide not only explain in detail each of the patterns used, it also shows you how are being applied in the Inventory Sample app.
 
-## The Inventory Sample app
+## The VanArsdel Inventory Sample
+**VanArsdel Inventory Sample** is an enterprise desktop application for Windows 10 focused on Line of Business scenarios and implementing best patterns and practices to solve common enterprise requirements.
 
-The purpose of the Inventory Sample app is to provide an example of Windows 10 enterprise app implementation. This app manages the Van Arsdel store, including customers, products, orders, etc. 
+This application simulates a real-world scenario where you can manage customers, orders and products of a fictitious company called VanArdsel.
 
- ![solution](img/intro-solution.png)
-
- App's solution has been divided in three decoupled projects, and each of them represents an important role in the app:
+The application solution has been divided in three decoupled projects, and each of them represents an important role in the app:
 
  | Project | Description |
  | ------- | ----------- |
- | Inventory.Data | [.Net Standard](netstandard.md) project with the data access logic of the app |
- | Inventory.ViewModels | [.Net Standard](netstandard.md) project representing the business and the presentation logic of the app |
- | Inventory.App | This is the Windows 10 app, where *User Interface Views* |
+ | Inventory.Data | .NET Standard project with the data access logic of the application |
+ | Inventory.ViewModels | .NET Standard project representing the business and the presentation logic of the application
+ | Inventory.App | The Windows 10 executable application containing the User Interface and services implementation |
 
  ### The Inventory.Data project
-
- .Net Standard library which purpose is to interact with a database through *Entity Framework Core*. It also contains the definitions of the DTOs (*data transfer objects*) of the app. We will explain this project in detail [here](dataaccess.md).
+ This project is a .NET Standard Library with the main purpose of interact with a database through the *Entity Framework Core*. It also contains the definitions of the DTOs (*Data Transfer Objects*) of the application.
 
  ### The Inventory.ViewModels project
-
-The main project of the app is the **Inventory.ViewModels**. This project, as we mentioned before, is a .Net Standard library, and it's agnostic of the platform that is going to consume it. A special attention is required for its folder structure:
-
- ![solution](img/intro-viewmodels.png)
+This project is a .NET Standard Library containing the presentation logic and infrastructure components of the application. This project is agnostic of the platform used by the application. A special attention is required for its folder structure:
 
  | Folder | Description |
  | ------ | ----------- |
- | Infrastructure | This folder will contain the [infrastructure services](architecture/infrastructure-services.md#Infrastructure-services) as well as the base logic of the ViewModels |
- | Models | Application Domain models |
+ | Infrastructure | This folder contains the infrastructure services as well as the base class for Models and ViewModels |
+ | Models | Application Domain Models |
  | Services | Application Domain Services |
- | ViewModels | ViewModels classes with the presentation logic of the app |
+ | ViewModels | ViewModels classes with the presentation logic of the application |
 
 ### The Inventory.App project
-
-This is the UWP app. It contains platform specific implementations like services and the UI. The last advance features of Windows 10 development has been applied to this project as well.
-
-## Summary
-
-After this introduction, the user should be familiarized with the structure of the solution and the purpose of each of the projects.
-We will address now the patterns applied in the Inventory Sample App as well as their implementation by example. 
-
+This project is the Windows 10 executable application. It contains platform specific implementations of the app like services and the User Interface.
 
