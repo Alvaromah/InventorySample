@@ -37,7 +37,7 @@ This project is supported by the [.NET Foundation](http://dotnetfoundation.org/)
 
 The following diagram shows the different layers in the application.
 
-![Architecture Diagram](docs/architecture/img/ovw-layers.png)
+![Architecture Diagram](docs/Architecture/img/ovw-layers.png)
 
 # Views
 Views are essentially what the user sees on the screen to interact with the application. Examples of Views in this application are: CustomersView, OrdersView or ProductsView.
@@ -88,7 +88,7 @@ For example, the CustomersView consists on the following subviews:
 
 The following image shows the diferent subviews contained in the CustomersView.
 
-![Views and Subviews](docs/architecture/img/ovw-views-subviews.png)
+![Views and Subviews](docs/Architecture/img/ovw-views-subviews.png)
 
 
 ## Shell views
@@ -107,7 +107,7 @@ When you execute the application and log in, the MainShell view is created. Ther
 
 The following image identifies the different elements in the MainShell view.
 
-![MainShellView](docs/architecture/img/ovw-views-mainshell.png)
+![MainShellView](docs/Architecture/img/ovw-views-mainshell.png)
 
 # ViewModels
 View-models are another essential part in the MVVM architecture pattern. You can read more details about the concepts of the View-model in the MVVM – View Model section of this documentation.
@@ -118,14 +118,14 @@ To see how view-models are related to views, let’s see an example with the Cus
 
 The following diagram shows this relationship.
 
-![ViewModels Relationships](docs/architecture/img/ovw-viewmodels-relationships.png)
+![ViewModels Relationships](docs/Architecture/img/ovw-viewmodels-relationships.png)
 
 ## ViewModel hierarchy
 Most of the properties and methods are common for all the different view-models so we use inheritance to reuse functionality.
 
 The following diagram shows the view-models hierarchy.
 
-![ViewModels Hierarchy](docs/architecture/img/ovw-viewmodels-hierarchy.png)
+![ViewModels Hierarchy](docs/Architecture/img/ovw-viewmodels-hierarchy.png)
 
 ### ObservableObject
 The ObservableObject is the base class for all the objects that need to notify that a property has changed. This class contains a typical implementation of the INotifyPropertyChanged interface.
@@ -185,7 +185,7 @@ Services contains the core functionality of the application. We distinguish two 
 
 The following diagram shows the two group of services used in this application:
 
-![Service Groups](docs/architecture/img/ovw-services-groups.png)
+![Service Groups](docs/Architecture/img/ovw-services-groups.png)
 
 ## Application Services
 Here is a brief description of the Application Services used in this application:
@@ -251,7 +251,7 @@ If the ServiceLocator returns a new instance, an existing instance, a real imple
 
 The following diagram shows the relationship between components using a ServiceLocator.
 
-![Dependency Injection ServiceLocator](docs/architecture/img/ovw-servicelocator-refs.png)
+![Dependency Injection ServiceLocator](docs/Architecture/img/ovw-servicelocator-refs.png)
 
 As you can see in the diagram, the component consuming the ILogService can make use of the LogService, even when the service is implemented out of the scope of the component.
 
