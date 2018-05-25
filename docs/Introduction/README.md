@@ -26,6 +26,8 @@ This guide not only explain in detail each of the patterns used, it also shows y
 
 This application simulates a real-world scenario where you can manage customers, orders and products of a fictitious company called VanArdsel.
 
+![VanArsdel Inventory Application](img/app-screenshot.png)
+
 The application solution has been divided in three decoupled projects, and each of them represents an important role in the app:
 
  | Project | Description |
